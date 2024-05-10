@@ -2,15 +2,66 @@
 
 const About = () => {
   return (
-    <div className='py-20 px-4 max-w-6xl mx-auto'>
-      <h1 className='text-3xl font-bold mb-4 text-slate-800'>About Sahand Estate</h1>
-      <p className='mb-4 text-slate-700'>Sahand Estate is a leading real estate agency that specializes in helping clients buy, sell, and rent properties in the most desirable neighborhoods. Our team of experienced agents is dedicated to providing exceptional service and making the buying and selling process as smooth as possible.</p>
-      <p className='mb-4 text-slate-700'>
-      Our mission is to help our clients achieve their real estate goals by providing expert advice, personalized service, and a deep understanding of the local market. Whether you are looking to buy, sell, or rent a property, we are here to help you every step of the way.
-      </p>
-      <p className='mb-4 text-slate-700'>Our team of agents has a wealth of experience and knowledge in the real estate industry, and we are committed to providing the highest level of service to our clients. We believe that buying or selling a property should be an exciting and rewarding experience, and we are dedicated to making that a reality for each and every one of our clients.</p>
-    </div>
-  )
-}
+    <div className="container mx-auto px-4">
+      <section className="py-8">
+        <h1 className="text-4xl font-bold text-center mb-4">About Us</h1>
+        <p className="text-xg text-center mb-8">
+          Learn more about our commitment to helping individuals find their perfect home and Manage their Properties at their finger tips.
+        </p>
+        
+        <div className="flex flex-wrap -mx-4">
+          <div className="w-full lg:w-1/2 px-4 mb-8">
+            <h2 className="text-2xl font-semibold mb-3">Our Mission</h2>
+            <p>
+              Our mission is to streamline the real estate process, making it easier for people to buy, sell, and rent properties. We believe that finding a dream home should be a joy, not a burden.
+            </p>
+          </div>
+          <div className="w-full lg:w-1/2 px-4 mb-8">
+            <h2 className="text-2xl font-semibold mb-3">Our Vision</h2>
+            <p>
+              We envision a world where the next step in your life journey is just a click away. We are dedicated to providing innovative solutions that empower our clients in the real estate market.
+            </p>
+          </div>
+        </div>
+      </section>
 
-export default About
+      <section className="py-8">
+        <h2 className="text-3xl font-bold text-center mb-6">Meet Our Team</h2>
+        <div className="flex flex-wrap justify-center items-center -mx-2">
+          {/* Team member card */}
+          <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2 mb-4">
+            <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+              <img className="w-full" src="./ceo.jpg" alt="Team member" />
+              <div className="p-4">
+                <h3 className="text-xl font-semibold mb-2"></h3>
+                <p className="text-gray-600 text-sm">CEO & Founder</p>
+              </div>
+            </div>
+          </div>
+          {/* Add more team member cards as needed */}
+          <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2 mb-4">
+            <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+              <img className="w-full" src="./cof.jpg" alt="Team member" />
+              <div className="p-4">
+                <h3 className="text-xl font-semibold mb-2"></h3>
+                <p className="text-gray-600 text-sm">Founder</p>
+              </div>
+            </div>
+          </div>
+        {/* {more team member} */}
+        <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2 mb-4">
+            <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+              <img className="w-full" src="./cof2.jpg" alt="Team member" />
+              <div className="p-4">
+                <h3 className="text-xl font-semibold mb-2"></h3>
+                <p className="text-gray-600 text-sm"> Founder</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default About;

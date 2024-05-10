@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MdLocationOn } from 'react-icons/md';
+import PropTypes from 'prop-types'; // Make sure to import PropTypes
 
 export default function ListingItem({ listing }) {
   return (
@@ -50,3 +51,20 @@ export default function ListingItem({ listing }) {
     </div>
   );
 }
+
+// Define PropTypes for ListingItem
+ListingItem.propTypes = {
+  listing: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    imageUrls: PropTypes.arrayOf(PropTypes.string),
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    offer: PropTypes.bool,
+    discountPrice: PropTypes.number,
+    regularPrice: PropTypes.number.isRequired,
+    type: PropTypes.string.isRequired,
+    bedrooms: PropTypes.number.isRequired,
+    bathrooms: PropTypes.number.isRequired,
+  }).isRequired
+};

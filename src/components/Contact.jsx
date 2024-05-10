@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
 export default function Contact({ listing }) {
   const [landlord, setLandlord] = useState(null);
   const [message, setMessage] = useState('');
+
   const onChange = (e) => {
     setMessage(e.target.value);
   };
@@ -18,15 +20,19 @@ export default function Contact({ listing }) {
         console.log(error);
       }
     };
-    fetchLandlord();
-  }, [listing.userRef]);
+    
+    if (listing && listing.userRef) {
+      fetchLandlord();
+    }
+  }, [listing]);
+
   return (
     <>
       {landlord && (
         <div className='flex flex-col gap-2'>
           <p>
-            Contact <span className='font-semibold'>{landlord.username}</span>{' '}
-            for{' '}
+            Contact <span className='font-semibold'>{landlord.username}</span>
+            {' '}for{' '}
             <span className='font-semibold'>{listing.name.toLowerCase()}</span>
           </p>
           <textarea
@@ -38,15 +44,24 @@ export default function Contact({ listing }) {
             placeholder='Enter your message here...'
             className='w-full border p-3 rounded-lg'
           ></textarea>
-
           <Link
-          to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}
-          className='bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95'
+            to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}
+            className='bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95'
           >
-            Send Message          
+            Send Message
           </Link>
         </div>
       )}
     </>
   );
 }
+
+// Define propTypes for Contact component
+Contact.propTypes = {
+  listing: PropTypes.shape({
+    userRef: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    // Define other properties of listing here if they are being used in the component
+  }).isRequired,
+  // You can add more props validation if there are other props
+};

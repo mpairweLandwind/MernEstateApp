@@ -46,9 +46,9 @@ export default function UpdateListing() {
     };
 
     fetchListing();
-  }, []);
+  }, [params.listingId]);
 
-  const handleImageSubmit = (e) => {
+  const handleImageSubmit = () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
       setImageUploadError(false);
@@ -66,7 +66,7 @@ export default function UpdateListing() {
           setImageUploadError(false);
           setUploading(false);
         })
-        .catch((err) => {
+        .catch(() => {
           setImageUploadError('Image upload failed (2 mb max per image)');
           setUploading(false);
         });
@@ -169,17 +169,18 @@ export default function UpdateListing() {
       setLoading(false);
     }
   };
+
   return (
-    <main className='p-3 max-w-4xl mx-auto'>
-      <h1 className='text-3xl font-semibold text-center my-7'>
-        Update a Listing
+    <main className='p-3 max-w-4xl mx-auto bg-gray-100'>
+      <h1 className='text-3xl font-semibold text-center my-7 text-gray-800'>
+        Update Property
       </h1>
       <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
         <div className='flex flex-col gap-4 flex-1'>
           <input
             type='text'
             placeholder='Name'
-            className='border p-3 rounded-lg'
+            className='border p-3 rounded-lg text-gray-800'
             id='name'
             maxLength='62'
             minLength='10'
@@ -190,7 +191,7 @@ export default function UpdateListing() {
           <textarea
             type='text'
             placeholder='Description'
-            className='border p-3 rounded-lg'
+            className='border p-3 rounded-lg text-gray-800'
             id='description'
             required
             onChange={handleChange}
@@ -199,7 +200,7 @@ export default function UpdateListing() {
           <input
             type='text'
             placeholder='Address'
-            className='border p-3 rounded-lg'
+            className='border p-3 rounded-lg text-gray-800'
             id='address'
             required
             onChange={handleChange}
@@ -376,7 +377,7 @@ export default function UpdateListing() {
             disabled={loading || uploading}
             className='p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'
           >
-            {loading ? 'Updating...' : 'Update listing'}
+            {loading ? 'Updating...' : 'Update Property'}
           </button>
           {error && <p className='text-red-700 text-sm'>{error}</p>}
         </div>

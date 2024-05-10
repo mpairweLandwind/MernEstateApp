@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+
 const initialState = {
   currentUser: null,
+  role: null,
   error: null,
   loading: false,
 };
@@ -10,14 +12,21 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    setRole: (state, action) => {
+      state.role = action.payload;
+    },
     signInStart: (state) => {
       state.loading = true;
     },
     signInSuccess: (state, action) => {
+      console.log('Action payload:', action.payload); // Log the action payload
       state.currentUser = action.payload;
+      state.role = action.payload.role;
       state.loading = false;
       state.error = null;
-    },
+      console.log('Updated state:', state); // Log the updated state
+    },    
+     
     signInFailure: (state, action) => {
       state.error = action.payload;
       state.loading = false;
@@ -49,8 +58,9 @@ const userSlice = createSlice({
     signOutUserStart: (state) => {
       state.loading = true;
     },
-    signOutUserSuccess: (state) => {
+    signOutSuccess: (state) => {
       state.currentUser = null;
+      state.role = null;
       state.loading = false;
       state.error = null;
     },

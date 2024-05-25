@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import Card from './Card/Card';
 
 function List({ listing }) {
-    // Check if listing is undefined or null and return a message or null component
-    if (!listing) {
-        return <p>No listings available.</p>; // You can adjust this message or render nothing as needed
+    // Ensure that listing is always treated as an array
+    if (!Array.isArray(listing)) {
+        return <p>No listings available.</p>;
     }
 
     return (
@@ -14,7 +14,7 @@ function List({ listing }) {
                     <Card key={item.id} listing={item} />
                 ))
             ) : (
-                <p>No listings to display.</p> // Handle empty arrays gracefully
+                <p>No listings to display.</p>
             )}
         </div>
     );
@@ -24,7 +24,7 @@ List.propTypes = {
     listing: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         // Add other required prop types for listing here
-    }))
+    })).isRequired
 };
 
 export default List;

@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-
 const initialState = {
   currentUser: null,
   role: null,
@@ -19,14 +18,11 @@ const userSlice = createSlice({
       state.loading = true;
     },
     signInSuccess: (state, action) => {
-      console.log('Action payload:', action.payload); // Log the action payload
       state.currentUser = action.payload;
       state.role = action.payload.role;
       state.loading = false;
       state.error = null;
-      console.log('Updated state:', state); // Log the updated state
-    },    
-     
+    },
     signInFailure: (state, action) => {
       state.error = action.payload;
       state.loading = false;
@@ -68,6 +64,12 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    clearCurrentUser: (state) => {
+      state.currentUser = null;
+      state.role = null;
+      state.error = null;
+      state.loading = false;
+    },
   },
 });
 
@@ -75,15 +77,16 @@ export const {
   signInStart,
   signInSuccess,
   signInFailure,
-  updateUserFailure,
-  updateUserSuccess,
   updateUserStart,
-  deleteUserFailure,
-  deleteUserSuccess,
+  updateUserSuccess,
+  updateUserFailure,
   deleteUserStart,
-  signOutUserFailure,
-  signOutUserSuccess,
+  deleteUserSuccess,
+  deleteUserFailure,
   signOutUserStart,
+  signOutUserSuccess,
+  signOutUserFailure,
+  clearCurrentUser,
 } = userSlice.actions;
 
 export default userSlice.reducer;

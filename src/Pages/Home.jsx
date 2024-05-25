@@ -14,37 +14,23 @@ export default function Home() {
   SwiperCore.use([Navigation]);
   console.log(offerListings);
   useEffect(() => {
-    const fetchOfferListings = async () => {
+    const fetchListings = async (url, setter) => {
       try {
-        const res = await fetch('/api/listing/get?offer=true&limit=4');
-        const data = await res.json();
-        setOfferListings(data);
-        fetchRentListings();
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setter(data);
       } catch (error) {
-        console.log(error);
-      }
-    };
-    const fetchRentListings = async () => {
-      try {
-        const res = await fetch('/api/listing/get?type=rent&limit=4');
-        const data = await res.json();
-        setRentListings(data);
-        fetchSaleListings();
-      } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch listings:", error);
+        setter([]); // Optionally reset or maintain the previous state
       }
     };
 
-    const fetchSaleListings = async () => {
-      try {
-        const res = await fetch('/api/listing/get?type=sale&limit=4');
-        const data = await res.json();
-        setSaleListings(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchOfferListings();
+    fetchListings('/api/listing/get?offer=true&limit=4', setOfferListings);
+    fetchListings('/api/listing/get?type=rent&limit=4', setRentListings);
+    fetchListings('/api/listing/get?type=sale&limit=4', setSaleListings);
   }, []);
   return (
     <div>

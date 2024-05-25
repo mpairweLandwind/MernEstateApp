@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 // import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import {
   getDownloadURL,
@@ -159,203 +160,200 @@ export default function CreateListing() {
     }
   };
   return (
-
     <main className='p-3 max-w-6xl mx-auto bg-slate-700 text-white'>
-  <h1 className='text-3xl font-semibold text-center my-7'>
-    Add Property
-  </h1>
-  <form onSubmit={handleSubmit} className='space-y-12 text-white'>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-3">
-      <h2 className="text-base font-semibold leading-7 text-white text-center">Property Details</h2>
-      <p className="mt-1 text-sm leading-6 text-white text-center">
-        Provide details about the property you are listing.
-      </p>
+    <h1 className='text-3xl font-semibold text-center my-7'>
+      Add Property
+    </h1>
+    <form onSubmit={handleSubmit} className='space-y-12'>
+      <div className="border-b border-gray-900/10 pb-12">
+        <h2 className="text-base font-semibold text-center text-white">Property Details</h2>
+        <p className="mt-1 text-md text-white text-center">
+          Provide details about the property you are Creating.
+        </p>
 
-      <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        {/* Property Name */}
-        <div>
-        <div className="sm:col-span-4">
-          <label htmlFor="name" className="block text-sm font-medium leading-6 text-white">
-            Property Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            required
-            placeholder="Enter property name"
-            className="mt-2 block w-full rounded-md border border-gray-300 py-1.5 text-gray-900 shadow-sm focus:ring-2 focus:ring-indigo-600 sm:text-sm"
-            onChange={handleChange}
-            value={formData.name}
-          />
-        </div>
-
-        <div className="form-group">
-              <label htmlFor="property" className="font-medium">Property Type</label>
-              <select id="property" required onChange={handleChange} value={formData.property} className="select">
-                <option value="apartment">Apartment</option>
-                <option value="house">House</option>
-                <option value="condo">Condo</option>
-                <option value="land">Land</option>
-              </select>
-            </div>
-
-        {/* Description */}
-        <div className="sm:col-span-4">
-          <label htmlFor="description" className="block text-sm font-medium leading-6 text-white">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            required
-            placeholder="Describe the property"
-            className="mt-2 block w-full rounded-md border border-gray-300 py-1.5 text-gray-900 shadow-sm focus:ring-2 focus:ring-indigo-600 sm:text-sm"
-            onChange={handleChange}
-            value={formData.description}
-          />
-        </div>
-
-        </div>
-
-        {/* Address */}
-        <div>
-        <div className="sm:col-span-4">
-          <label htmlFor="address" className="block text-sm font-medium leading-6 text-white">
-            Address
-          </label>
-          <input
-            type="text"
-            name="address"
-            id="address"
-            required
-            placeholder="Enter property address"
-            className="mt-2 block w-full rounded-md border border-gray-300 py-1.5 text-gray-900  shadow-sm focus:ring-2 focus:ring-indigo-600 sm:text-sm"
-            onChange={handleChange}
-            value={formData.address}
-          />
-        </div>
-
-        <div className='sm:col-span-4'>
-  <label htmlFor="status" className="block font-semibold">Status</label>
-  <select
-    id="status"
-    className="input"
-    value={formData.status}
-    onChange={handleChange}
-    required
-  >
-    <option value="AVAILABLE">Available</option>
-    <option value="OCCUPIED">Occupied</option>
-    <option value="UNDER_CONTRACT">Under Contract</option>
-    <option value="FOR_SALE">For Sale</option>
-    <option value="UNDER_RENOVATION">Under Renovation</option>
-    <option value="PENDING_APPROVAL">Pending Approval</option>
-    <option value="SOLD">Sold</option>
-    <option value="TERMINATED">Terminated</option>
-    <option value="PENDING_AVAILABILITY">Pending Availability</option>
-    <option value="INACTIVE">Inactive</option>
-  </select>
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-6 mt-10">
+  <InputField label="Property Name" id="name" type="text" value={formData.name} onChange={handleChange} />
+  <SelectField label="Property Type" id="property" options={['Apartment', 'House', 'Condo', 'Land']} value={formData.property} onChange={handleChange} />
+  <TextareaField label="Description" id="description" value={formData.description} onChange={handleChange} />
+  <InputField label="Address" id="address" type="text" autoComplete="street-address" value={formData.address} onChange={handleChange} />
+  <InputField label="Latitude" id="latitude" type="text" value={formData.latitude} onChange={handleChange} placeholder="Enter latitude" />
+  <InputField label="Longitude" id="longitude" type="text" value={formData.longitude} onChange={handleChange} placeholder="Enter longitude" />
+  <SelectField label="Status" id="status" options={['Available', 'Occupied', 'Under Contract', 'For Sale', 'Under Renovation', 'Pending Approval', 'Sold', 'Terminated', 'Pending Availability', 'Inactive']} value={formData.status} onChange={handleChange} />
 </div>
-    
-
-
       </div>
 
+      {/* Property Options */}
+      <PropertyOptions formData={formData} handleChange={handleChange} />
 
-
-         </div>
-
-        {/* Property Options */}
-        <div className="sm:col-span-6 flex flex-wrap gap-6">
-          {['sale', 'rent', 'parking', 'furnished', 'offer'].map((type) => (
-            <div key={type} className='flex items-center gap-2'>
-              <input
-                type='checkbox'
-                id={type}
-                className='w-5 h-5'
-                onChange={handleChange}
-                checked={formData[type]}
-              />
-              <label htmlFor={type} className='text-sm text-white capitalize'>
-                {type} {type === 'offer' ? '50% off' : ''}
-              </label>
-            </div>
-          ))}
-
-          {/* Bedrooms, Bathrooms, Prices */}
-          {['bedrooms', 'bathrooms', 'regularPrice', 'discountPrice'].map((field) => (
-            <div key={field} className='flex items-center gap-2'>
-              <input
-                type='number'
-                id={field}
-                min='1'
-                max='10000000'
-                required={field !== 'discountPrice' || formData.offer}
-                className='p-2 border border-gray-300 rounded-lg text-gray-900 '
-                onChange={handleChange}
-                value={formData[field]}
-              />
-              <label htmlFor={field} className='text-sm text-white capitalize'>
-                {field.replace(/([A-Z])/g, ' $1').toLowerCase()} {formData.type === 'rent' && field.includes('Price') ? '($ / month)' : ''}
-              </label>
-            </div>
-          ))}
-        </div>
-     
-    </div>
-
-    {/* Image Upload Section */}
-    <div className='flex flex-col flex-1 gap-4'>
-      <p className='font-semibold'>
-        Images:
-        <span className='font-normal text-white ml-2'>
-          The first image will be the cover (max 6)
-        </span>
-      </p>
-      <div className='flex gap-4'>
-        <input
-          onChange={(e) => setFiles(e.target.files)}
-          className='p-3 border border-gray-300 rounded w-full'
-          type='file'
-          id='images'
-          accept='image/*'
-          multiple
-        />
-        <button
-          type='button'
-          disabled={uploading}
-          onClick={handleImageSubmit}
-          className='p-3 text-white border border-white rounded uppercase hover:shadow-lg disabled:opacity-80'
-        >
-          {uploading ? 'Uploading...' : 'Upload'}
-        </button>
-      </div>
-      {imageUploadError && <p className='text-red-700 text-sm'>{imageUploadError}</p>}
-      {formData.imageUrls.length > 0 && formData.imageUrls.map((url, index) => (
-        <div key={url} className='flex justify-between p-3 border items-center'>
-          <img src={url} alt='listing image' className='w-20 h-20 object-contain rounded-lg' />
-          <buttun
-            type='button'
-            onClick={() => handleRemoveImage(index)}
-            className='p-3 text-white rounded-lg uppercase hover:opacity-75'
-          >
-            Delete
-          </buttun>
-        </div>
-      ))}
-      <button
-        type="submit"
-        disabled={loading || uploading}
-        className="mt-4 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      >
-        {loading ? 'Creating...' : 'Create listing'}
-      </button>
-      {error && <p className='text-red-700 text-sm'>{error}</p>}
-    </div>
-  </form>
-</main>
+      {/* Image Upload Section */}
+      <ImageUploadSection 
+        setFiles={setFiles} 
+        handleImageSubmit={handleImageSubmit} 
+        handleRemoveImage={handleRemoveImage} 
+        uploading={uploading} 
+        formData={formData} 
+        loading={loading} 
+        error={error} 
+        imageUploadError={imageUploadError}
+      />
+    </form>
+  </main>  
 
     
   );
 }
+
+function PropertyOptions({ formData, handleChange }) {
+  const propertyOptions = ['sale', 'rent', 'parking', 'furnished', 'offer'];
+  const propertyFields = ['bedrooms', 'bathrooms', 'regularPrice', 'discountPrice'];
+
+  return (
+    <div className="sm:col-span-6 flex flex-wrap gap-6">
+      {propertyOptions.map((type) => (
+        <CheckboxField key={type} id={type} label={`${type} ${type === 'offer' ? '50% off' : ''}`} checked={formData[type]} onChange={handleChange} />
+      ))}
+      {propertyFields.map((field) => (
+        <InputField key={field} type="number" id={field} min="1" max="10000000" required={field !== 'discountPrice' || formData.offer} value={formData[field]} onChange={handleChange} label={`${field.replace(/([A-Z])/g, ' $1').toLowerCase()} ${formData.type === 'rent' && field.includes('Price') ? '($ / month)' : ''}`} />
+      ))}
+    </div>
+  );
+}
+
+function ImageUploadSection({ setFiles, handleImageSubmit, handleRemoveImage, uploading, formData, loading, error, imageUploadError }) {
+  return (
+    <div className='flex flex-col flex-1 gap-4'>
+      <p className='font-semibold'>Images:<span className='font-normal ml-2'>The first image will be the cover (max 6)</span></p>
+      <div className='flex gap-4'>
+        <input onChange={(e) => setFiles(e.target.files)} className='p-3 border border-gray-300 rounded w-full' type='file' id='images' accept='image/*' multiple />
+        <button type='button' disabled={uploading} onClick={handleImageSubmit} className='p-3 border border-white rounded uppercase hover:shadow-lg disabled:opacity-80'>{uploading ? 'Uploading...' : 'Upload'}</button>
+      </div>
+      {imageUploadError && <p className='text-red-700 text-sm'>{imageUploadError}</p>}
+      {formData.imageUrls.length > 0 && formData.imageUrls.map((url, index) => (
+        <div key={url} className='flex justify-between p-3 border items-center'>
+          <img src={url} alt='listing' className='w-20 h-20 object-contain rounded-lg' />
+          <button type='button' onClick={() => handleRemoveImage(index)} className='p-3 rounded-lg uppercase hover:opacity-75'>Delete</button>
+        </div>
+      ))}
+      <button type="submit" disabled={loading || uploading} className="mt-4 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">{loading ? 'Creating...' : 'Create Property'}</button>
+      {error && <p className='text-white text-md'>{error}</p>}
+    </div>
+  );
+}
+
+// Reusable input, select, and textarea components to reduce redundancy
+function InputField({ label, id, type = 'text', autoComplete = 'off', placeholder = '', min, max, required = false, value, onChange }) {
+  return (
+    <div className={`sm:col-span-${type === 'number' ? '2' : '4'}`}>
+      <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">{label}</label>
+      <input type={type} name={id} id={id} autoComplete={autoComplete} placeholder={placeholder} min={min} max={max} required={required} className="mt-2 block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm" onChange={onChange} value={value} />
+    </div>
+  );
+}
+
+function SelectField({ label, id, options, value, onChange }) {
+  return (
+    <div className="sm:col-span-2">
+      <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">{label}</label>
+      <select id={id} name={id} className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm" onChange={onChange} value={value}>
+        {options.map(option => <option key={option} value={option.toUpperCase()}>{option}</option>)}
+      </select>
+    </div>
+  );
+}
+
+function TextareaField({ label, id, value, onChange }) {
+  return (
+    <div className="sm:col-span-4">
+      <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">{label}</label>
+      <textarea id={id} name={id} autoComplete="off" placeholder="Describe the property" className="mt-2 block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm" onChange={onChange} value={value} />
+    </div>
+  );
+}
+
+function CheckboxField({ id, label, checked, onChange }) {
+  return (
+    <div className='flex items-center gap-2'>
+      <input type='checkbox' id={id} className='w-5 h-5' onChange={onChange} checked={checked} />
+      <label htmlFor={id} className='text-sm text-white capitalize'>{label}</label>
+    </div>
+  );
+}
+
+
+ImageUploadSection.propTypes = {
+  setFiles: PropTypes.func.isRequired,
+  handleImageSubmit: PropTypes.func.isRequired,
+  handleRemoveImage: PropTypes.func.isRequired,
+  uploading: PropTypes.bool.isRequired,
+  formData: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
+  imageUploadError: PropTypes.string
+};
+
+InputField.propTypes = {
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  autoComplete: PropTypes.string,
+  placeholder: PropTypes.string,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  required: PropTypes.bool,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]).isRequired,
+  onChange: PropTypes.func.isRequired
+};
+
+InputField.defaultProps = {
+  type: 'text',
+  autoComplete: 'off',
+  placeholder: '',
+  required: false
+};
+
+PropertyOptions.propTypes = {
+  formData: PropTypes.shape({
+    name: PropTypes.string,
+    type: PropTypes.string,
+    property: PropTypes.string,
+    status: PropTypes.string,
+    description: PropTypes.string,
+    address: PropTypes.string,
+    regularPrice: PropTypes.number,
+    discountPrice: PropTypes.number,
+    bathrooms: PropTypes.number,
+    bedrooms: PropTypes.number,
+    furnished: PropTypes.bool,
+    parking: PropTypes.bool,
+    offer: PropTypes.bool,
+    latitude: PropTypes.string,
+    longitude: PropTypes.string,
+    imageUrls: PropTypes.arrayOf(PropTypes.string)
+  }).isRequired,
+  handleChange: PropTypes.func.isRequired
+};
+
+SelectField.propTypes = {
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired
+};
+
+CheckboxField.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  onChange: PropTypes.func.isRequired
+};
+
+TextareaField.propTypes = {
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired
+};

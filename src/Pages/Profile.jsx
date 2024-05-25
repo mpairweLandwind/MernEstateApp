@@ -9,8 +9,6 @@ import "./Profile.scss"
 import Chat from '../components/chat/Chat';
 
 
-
-
 export default function Profile() {
   
   const { currentUser } = useSelector((state) => state.user); 

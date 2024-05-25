@@ -3,26 +3,22 @@ import Card from './Card/Card';
 
 function List({ listing }) {
     // Ensure that listing is always treated as an array
-    if (!Array.isArray(listing)) {
+    if (!Array.isArray(listing) || listing.length === 0) {
         return <p>No listings available.</p>;
     }
 
     return (
         <div className='flex flex-col gap-10'>
-            {listing.length > 0 ? (
-                listing.map(item => (
-                    <Card key={item.id} listing={item} />
-                ))
-            ) : (
-                <p>No listings to display.</p>
-            )}
+            {listing.map(item => (
+                <Card key={item._id} listing={item} />
+            ))}
         </div>
     );
 }
 
 List.propTypes = {
     listing: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
+        _id: PropTypes.string.isRequired,
         // Add other required prop types for listing here
     })).isRequired
 };

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   currentUser: null,
-  role: null,
+  token: null,
   error: null,
   loading: false,
 };
@@ -11,15 +11,12 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setRole: (state, action) => {
-      state.role = action.payload;
-    },
     signInStart: (state) => {
       state.loading = true;
     },
     signInSuccess: (state, action) => {
-      state.currentUser = action.payload;
-      state.role = action.payload.role;
+      state.currentUser = action.payload.user;
+      state.token = action.payload.token;
       state.loading = false;
       state.error = null;
     },
@@ -44,6 +41,7 @@ const userSlice = createSlice({
     },
     deleteUserSuccess: (state) => {
       state.currentUser = null;
+      state.token = null;
       state.loading = false;
       state.error = null;
     },
@@ -54,20 +52,14 @@ const userSlice = createSlice({
     signOutUserStart: (state) => {
       state.loading = true;
     },
-    signOutSuccess: (state) => {
+    signOutUserSuccess: (state) => {
       state.currentUser = null;
-      state.role = null;
+      state.token = null;
       state.loading = false;
       state.error = null;
     },
     signOutUserFailure: (state, action) => {
       state.error = action.payload;
-      state.loading = false;
-    },
-    clearCurrentUser: (state) => {
-      state.currentUser = null;
-      state.role = null;
-      state.error = null;
       state.loading = false;
     },
   },
@@ -77,16 +69,15 @@ export const {
   signInStart,
   signInSuccess,
   signInFailure,
-  updateUserStart,
-  updateUserSuccess,
   updateUserFailure,
-  deleteUserStart,
-  deleteUserSuccess,
+  updateUserSuccess,
+  updateUserStart,
   deleteUserFailure,
-  signOutUserStart,
-  signOutUserSuccess,
+  deleteUserSuccess,
+  deleteUserStart,
   signOutUserFailure,
-  clearCurrentUser,
+  signOutUserSuccess,
+  signOutUserStart,
 } = userSlice.actions;
 
 export default userSlice.reducer;

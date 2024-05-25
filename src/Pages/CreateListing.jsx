@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-// import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -17,27 +11,27 @@ export default function CreateListing() {
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
-    type: 'rent',              // Default to 'rent', ensure the value matches an enum from ListingType
-    property: 'apartment',      // Default, assuming you want a default
-    status: 'AVAILABLE',        // Default status, ensure this matches an enum from PropertyStatus
+    type: 'rent',              
+    property: '',      
+    status: 'available',        
     description: '',
     address: '',
-    regularPrice: 50,           // Default set, adjust as necessary
-    discountPrice: 0,           // Default set, adjust as necessary
+    regularPrice: '',           
+    discountPrice: '',           
     bathrooms: 1,
     bedrooms: 1,
     furnished: false,
     parking: false,
     offer: false,
-    latitude: '',               // Optional
-    longitude: '',              // Optional
+    latitude: '',               
+    longitude: '',              
     imageUrls: [],
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.log(formData);
+
   const handleImageSubmit = () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
@@ -99,112 +93,119 @@ export default function CreateListing() {
   };
 
   const handleChange = (e) => {
-    if (e.target.id === 'sale' || e.target.id === 'rent') {
+    const { id, value, checked, type } = e.target;
+    if (type === 'checkbox') {
       setFormData({
         ...formData,
-        type: e.target.id,
+        [id]: checked,
       });
-    }
-
-    if (
-      e.target.id === 'parking' ||
-      e.target.id === 'furnished' ||
-      e.target.id === 'offer'
-    ) {
+    } else if (id === 'regularPrice' || id === 'discountPrice') {
+      // Convert regularPrice and discountPrice to float
       setFormData({
         ...formData,
-        [e.target.id]: e.target.checked,
+        [id]: parseFloat(value),
       });
-    }
-
-    if (
-      e.target.type === 'number' ||
-      e.target.type === 'text' ||
-      e.target.type === 'textarea'
-    ) {
+    } else {
       setFormData({
         ...formData,
-        [e.target.id]: e.target.value,
+        [id]: value,
       });
     }
   };
+  
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (formData.imageUrls.length < 1)
-        return setError('You must upload at least one image');
-      if (+formData.regularPrice < +formData.discountPrice)
-        return setError('Discount price must be lower than regular price');
-      setLoading(true);
-      setError(false);
-      const res = await fetch('/api/listing/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          userRef: currentUser._id,
-        }),
-      });
-      const data = await res.json();
-      setLoading(false);
-      if (data.success === false) {
-        setError(data.message);
-      }
+  // Inside CreateListing component
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    if (formData.imageUrls.length < 1)
+      return setError('You must upload at least one image');
+    
+    if (+formData.regularPrice < +formData.discountPrice)
+      return setError('Discount price must be lower than regular price or zero');
+    
+    setLoading(true);
+    setError(false);
+    const res = await fetch('/api/listing/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...formData,
+        userRef: currentUser._id,
+      }),
+    });
+    if (!res.ok) { // Check if response is successful
+      throw new Error('Failed to create listing');
+    }
+    const data = await res.json();
+    setLoading(false);
+    if (data.success === false) {
+      setError(data.message);
+    } else {
       navigate(`/listing/${data._id}`);
-    } catch (error) {
-      setError(error.message);
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    setError(error.message); // Provide more descriptive error message
+    setLoading(false);
+  }
+};
+
+// Inside PropertyOptions component
+
+PropertyOptions.propTypes = {
+  formData: PropTypes.shape({
+    // Change discountPrice prop type to number
+    discountPrice: PropTypes.number.isRequired,
+    // Other PropTypes remain unchanged
+  }).isRequired,
+  handleChange: PropTypes.func.isRequired
+};
+
+// Ensure discountPrice is converted to a number
+formData.discountPrice = parseFloat(formData.discountPrice);
+
   return (
     <main className='p-3 max-w-6xl mx-auto bg-slate-700 text-white'>
-    <h1 className='text-3xl font-semibold text-center my-7'>
-      Add Property
-    </h1>
-    <form onSubmit={handleSubmit} className='space-y-12'>
-      <div className="border-b border-gray-900/10 pb-12">
-        <h2 className="text-base font-semibold text-center text-white">Property Details</h2>
-        <p className="mt-1 text-md text-white text-center">
-          Provide details about the property you are Creating.
-        </p>
-
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-6 mt-10">
-  <InputField label="Property Name" id="name" type="text" value={formData.name} onChange={handleChange} />
-  <SelectField label="Property Type" id="property" options={['Apartment', 'House', 'Condo', 'Land']} value={formData.property} onChange={handleChange} />
-  <TextareaField label="Description" id="description" value={formData.description} onChange={handleChange} />
-  <InputField label="Address" id="address" type="text" autoComplete="street-address" value={formData.address} onChange={handleChange} />
-  <InputField label="Latitude" id="latitude" type="text" value={formData.latitude} onChange={handleChange} placeholder="Enter latitude" />
-  <InputField label="Longitude" id="longitude" type="text" value={formData.longitude} onChange={handleChange} placeholder="Enter longitude" />
-  <SelectField label="Status" id="status" options={['Available', 'Occupied', 'Under Contract', 'For Sale', 'Under Renovation', 'Pending Approval', 'Sold', 'Terminated', 'Pending Availability', 'Inactive']} value={formData.status} onChange={handleChange} />
-</div>
-      </div>
-
-      {/* Property Options */}
-      <PropertyOptions formData={formData} handleChange={handleChange} />
-
-      {/* Image Upload Section */}
-      <ImageUploadSection 
-        setFiles={setFiles} 
-        handleImageSubmit={handleImageSubmit} 
-        handleRemoveImage={handleRemoveImage} 
-        uploading={uploading} 
-        formData={formData} 
-        loading={loading} 
-        error={error} 
-        imageUploadError={imageUploadError}
-      />
-    </form>
-  </main>  
-
-    
+      <h1 className='text-3xl font-semibold text-center my-7'>Add Property</h1>
+      <form onSubmit={handleSubmit} className='space-y-12'>
+        <div className="border-b border-gray-900/10 pb-12">
+          <h2 className="text-base font-semibold text-center text-white">Property Details</h2>
+          <p className="mt-1 text-md text-white text-center">
+            Provide details about the property you are Creating.
+          </p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-6 mt-10">
+            <InputField label="Property Name" id="name" type="text" value={formData.name} onChange={handleChange} />            
+            <SelectField label="Type" id="type" options={[ 'rent', 'sale']} value={formData.type} onChange={handleChange} />
+            <SelectField label="Status" id="status" options={['available', 'occupied', 'under_contract', 'for_sale', 'under_renovation', 'pending_approval', 'sold', 'terminated', 'pending_availability', 'inactive']} value={formData.status} onChange={handleChange} />
+            <SelectField label="Property Type" id="property" options={['apartment', 'house', 'condo', 'land']} value={formData.property} onChange={handleChange} />
+            <TextareaField label="Description" id="description" value={formData.description} onChange={handleChange} />            
+            <InputField label="Address" id="address" type="text" autoComplete="street-address" value={formData.address} onChange={handleChange} />
+            <InputField label="Latitude" id="latitude" type="text" value={formData.latitude} onChange={handleChange} placeholder="Enter latitude" />
+            <InputField label="Longitude" id="longitude" type="text" value={formData.longitude} onChange={handleChange} placeholder="Enter longitude" />
+           
+          </div>
+        </div>
+        <PropertyOptions formData={formData} handleChange={handleChange} />
+        <ImageUploadSection 
+          setFiles={setFiles} 
+          handleImageSubmit={handleImageSubmit} 
+          handleRemoveImage={handleRemoveImage} 
+          uploading={uploading} 
+          formData={formData} 
+          loading={loading} 
+          error={error} 
+          imageUploadError={imageUploadError}
+        />
+      </form>
+    </main>
   );
 }
 
 function PropertyOptions({ formData, handleChange }) {
-  const propertyOptions = ['sale', 'rent', 'parking', 'furnished', 'offer'];
+  const propertyOptions = ['parking', 'furnished', 'offer'];
   const propertyFields = ['bedrooms', 'bathrooms', 'regularPrice', 'discountPrice'];
 
   return (
@@ -213,7 +214,7 @@ function PropertyOptions({ formData, handleChange }) {
         <CheckboxField key={type} id={type} label={`${type} ${type === 'offer' ? '50% off' : ''}`} checked={formData[type]} onChange={handleChange} />
       ))}
       {propertyFields.map((field) => (
-        <InputField key={field} type="number" id={field} min="1" max="10000000" required={field !== 'discountPrice' || formData.offer} value={formData[field]} onChange={handleChange} label={`${field.replace(/([A-Z])/g, ' $1').toLowerCase()} ${formData.type === 'rent' && field.includes('Price') ? '($ / month)' : ''}`} />
+        <InputField key={field} type="number" id={field} min="0" max="20000" label={field.replace(/([a-z])([A-Z])/g, '$1 $2')} value={formData[field]} onChange={handleChange} />
       ))}
     </div>
   );
@@ -221,8 +222,7 @@ function PropertyOptions({ formData, handleChange }) {
 
 function ImageUploadSection({ setFiles, handleImageSubmit, handleRemoveImage, uploading, formData, loading, error, imageUploadError }) {
   return (
-    <div className='flex flex-col flex-1 gap-4'>
-      <p className='font-semibold'>Images:<span className='font-normal ml-2'>The first image will be the cover (max 6)</span></p>
+    <div className="space-y-6 bg-slate-900 p-3 rounded-lg shadow-md">
       <div className='flex gap-4'>
         <input onChange={(e) => setFiles(e.target.files)} className='p-3 border border-gray-300 rounded w-full' type='file' id='images' accept='image/*' multiple />
         <button type='button' disabled={uploading} onClick={handleImageSubmit} className='p-3 border border-white rounded uppercase hover:shadow-lg disabled:opacity-80'>{uploading ? 'Uploading...' : 'Upload'}</button>
@@ -240,12 +240,11 @@ function ImageUploadSection({ setFiles, handleImageSubmit, handleRemoveImage, up
   );
 }
 
-// Reusable input, select, and textarea components to reduce redundancy
 function InputField({ label, id, type = 'text', autoComplete = 'off', placeholder = '', min, max, required = false, value, onChange }) {
   return (
     <div className={`sm:col-span-${type === 'number' ? '2' : '4'}`}>
       <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">{label}</label>
-      <input type={type} name={id} id={id} autoComplete={autoComplete} placeholder={placeholder} min={min} max={max} required={required} className="mt-2 block w-full p-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm" onChange={onChange} value={value} />
+      <input type={type} name={id} id={id} autoComplete={autoComplete} placeholder={placeholder} min={min} max={max} required={required} className="mt-2 block w-full*0.75 p-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm" onChange={onChange} value={value} />
     </div>
   );
 }
@@ -255,7 +254,7 @@ function SelectField({ label, id, options, value, onChange }) {
     <div className="sm:col-span-2">
       <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">{label}</label>
       <select id={id} name={id} className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm" onChange={onChange} value={value}>
-        {options.map(option => <option key={option} value={option.toUpperCase()}>{option}</option>)}
+        {options.map(option => <option key={option} value={option}>{option}</option>)}
       </select>
     </div>
   );
@@ -265,7 +264,7 @@ function TextareaField({ label, id, value, onChange }) {
   return (
     <div className="sm:col-span-4">
       <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">{label}</label>
-      <textarea id={id} name={id} autoComplete="off" placeholder="Describe the property" className="mt-2 block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm" onChange={onChange} value={value} />
+      <textarea id={id} name={id} autoComplete="off" placeholder="Describe the property" className="mt-2 block w-full/2 rounded-md border-0 p-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm" onChange={onChange} value={value} />
     </div>
   );
 }
@@ -278,7 +277,6 @@ function CheckboxField({ id, label, checked, onChange }) {
     </div>
   );
 }
-
 
 ImageUploadSection.propTypes = {
   setFiles: PropTypes.func.isRequired,

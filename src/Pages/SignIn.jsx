@@ -26,33 +26,40 @@ export default function SignIn() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
-      console.log(data);
 
-      if (!data.success || !data.token) {
-        dispatch(signInFailure(data.message || 'Authentication failed'));
-        return;
-      }
+      const responseText = await res.text();
+      if (res.ok) {
+        const data = JSON.parse(responseText);
+        console.log(data);
 
-      // Dispatch success action with the user and token
-      dispatch(signInSuccess({ user: data.user, token: data.token }));
+        if (!data.success || !data.token) {
+          dispatch(signInFailure(data.message || 'Authentication failed'));
+          return;
+        }
 
-      // Persist token in localStorage if needed
-      localStorage.setItem('token', data.token);
+        // Dispatch success action with the user and token
+        dispatch(signInSuccess({ user: data.user, token: data.token }));
 
-      // Redirect based on the role property in the data object
-      const role = data.user.role;
-      if (role === 'admin') {
-        navigate('/admin-dashboard');
-      } else if (role === 'landlord') {
-        navigate('/landlord');
-      } else if (role === 'user') {
-        navigate('/user-dashboard');
+        // Persist token in localStorage if needed
+        localStorage.setItem('token', data.token);
+
+        // Redirect based on the role property in the data object
+        const role = data.user.role;
+        if (role === 'admin') {
+          navigate('/admin-dashboard');
+        } else if (role === 'landlord') {
+          navigate('/landlord');
+        } else if (role === 'user') {
+          navigate('/user-dashboard');
+        } else {
+          navigate('/'); // Default redirection if role is undefined or not handled
+        }
       } else {
-        navigate('/'); // Default redirection if role is undefined or not handled
+        const errorData = JSON.parse(responseText);
+        dispatch(signInFailure(errorData.message || 'Authentication failed'));
       }
     } catch (error) {
-      dispatch(signInFailure(error.message));
+      dispatch(signInFailure('Failed to connect to the server'));
     }
   };
 

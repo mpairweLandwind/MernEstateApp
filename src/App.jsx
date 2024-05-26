@@ -31,25 +31,16 @@ const App = () => {
         <Route path='/search' element={<Search />} />
         <Route path='/listing/:listingId' element={<Listing />} />
 
-           {/* Assuming '/profile' is the user dashboard */}
         {currentUserRole === 'user' && (
           <Route path='/user-dashboard' element={<User />} />
         )}
 
-        {currentUserRole === 'landlord' && (
-          <Route element={<PrivateRoute allowedRoles={['landlord', 'admin']} />}>
-            <Route path='/landlord' element={<Profile />} />
-            <Route path='/create-listing' element={<CreateListing />} />
-            <Route path='/update-listing/:listingId' element={<UpdateListing />} />
-          </Route>
-        )}
-
-        {currentUserRole === 'landlord' && (
-          <Route element={<PrivateRoute allowedRoles={['admin', 'landlord']} />}>
-            <Route path="/profile-management" element={<ProfileManagement />} />
-          </Route>
-        )}
-
+        <Route element={<PrivateRoute allowedRoles={['landlord', 'admin']} />}>
+          <Route path='/landlord' element={<Profile />} />
+          <Route path='/create-listing' element={<CreateListing />} />
+          <Route path='/update-listing/:listingId' element={<UpdateListing />} />
+          <Route path="/profile-management" element={<ProfileManagement />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

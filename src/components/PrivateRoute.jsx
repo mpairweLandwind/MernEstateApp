@@ -1,19 +1,22 @@
-// import { useSelector } from 'react-redux';
-// import { Outlet, Navigate } from 'react-router-dom';
-
-// export default function PrivateRoute() {
-//   const { currentUser } = useSelector((state) => state.user);
-//   return currentUser ? <Outlet /> : <Navigate to='/sign-in' />;
-// }
-
-
 import PropTypes from 'prop-types';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const PrivateRoute = ({ allowedRoles }) => {
-  const { role } = useSelector((state) => state.user);
-  return allowedRoles.includes(role) ? <Outlet /> : <Navigate to="/" />;
+  const { currentUser, token } = useSelector((state) => state.user);
+
+  if (!token) {
+    // If no token, redirect to sign-in page
+    return <Navigate to="/sign-in" replace />;
+  }
+
+  if (!allowedRoles.includes(currentUser?.role)) {
+    // If user does not have the required role, redirect to home page
+    return <Navigate to="/" replace />;
+  }
+
+  // If authenticated and has required role, render the child components
+  return <Outlet />;
 };
 
 // Define prop types for the allowedRoles prop

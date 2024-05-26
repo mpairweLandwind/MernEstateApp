@@ -10,7 +10,7 @@ import { clearCurrentUser } from "../../redux/user/userSlice";
 
 function Chat({ chats }) {
   const [chat, setChat] = useState(null);
-  const currentUser = useSelector(state => state.currentUser);
+  const currentUser = useSelector(state => state.user.currentUser);
   const dispatch = useDispatch();
   const { socket } = useContext(SocketContext);
   const messageEndRef = useRef();

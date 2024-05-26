@@ -29,13 +29,16 @@ export default function SignIn() {
       const data = await res.json();
       console.log(data);
 
-      if (!data.token) {
+      if (!data.success || !data.token) {
         dispatch(signInFailure(data.message || 'Authentication failed'));
         return;
       }
 
       // Dispatch success action with the user and token
       dispatch(signInSuccess({ user: data.user, token: data.token }));
+
+      // Persist token in localStorage if needed
+      localStorage.setItem('token', data.token);
 
       // Redirect based on the role property in the data object
       const role = data.user.role;

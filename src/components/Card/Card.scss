@@ -1,16 +1,12 @@
-@import "../../responsive.scss";
-
 .card {
     display: flex;
     gap: 20px;
+    margin-top: 20px;
+        margin-left: 20px;
 
     .imageContainer {
         flex: 2;
         height: 200px;
-
-        @include sm {
-            display: none;
-        }
 
         img {
             width: 100%;
@@ -86,16 +82,10 @@
                 gap: 20px;
 
                 .icon {
-                    border: 1px solid #999;
-                    padding: 2px 5px;
-                    border-radius: 5px;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
+                    color: lightgray;
 
                     &:hover {
-                        background-color: lightgray;
+                        color: orange;
                     }
                 }
             }

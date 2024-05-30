@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import "leaflet/dist/leaflet.css";
+import './map.scss';
 
 function Map() {
     const [userLocation, setUserLocation] = useState(null);
@@ -61,7 +62,7 @@ function Map() {
                 </button>
             </form>
             {userLocation ? (
-                <MapContainer center={[userLocation.lat, userLocation.lng]} zoom={13} style={{ height: 'calc(100vh - 64px)' }}>
+                <MapContainer center={[userLocation.lat, userLocation.lng]} zoom={13} className="map">
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />

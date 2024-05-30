@@ -66,16 +66,19 @@
     .chatContainer {
         flex: 2;
         background-color: #fcf5f3;
-        height: 100%;
-
+        height: 100vh; // Set the height to 100% of the viewport height
+            max-height: 100vh; // Ensure the maximum height doesn't exceed the viewport height
         @include md {
             flex: none;
-            height: max-content;
+            height: auto; // Adjust height to auto for medium devices and larger
+                max-height: none; // Remove the max-height restriction for larger screens
         }
-
+    
         .wrapper {
             padding: 0px 20px;
             height: 100%;
+            overflow-y: auto; // Ensure content is scrollable if it exceeds the height
         }
     }
+    
 }
